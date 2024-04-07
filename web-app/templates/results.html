@@ -40,22 +40,18 @@
 </head>
 
 <body>
-    <div class="header">
-        <div>
-            <p>ByteBite</p>
-        </div>
-    </div>
-
-
-    <div class="scrollable">
-    <div class="unit">
-        {% if search_query %}
-         <h2> Results</h2>
-    <a href="{{ url_for('show_search',post_id=bytebite['_id'])}}"> <!-- each post is a link to a page of j that post -->
-            <div class="post">
-                <p>{{ bytebite['_id'] }}</p>
-            </div>
-            </a>
+    <h1>Nearby Coffee Shops</h1>
+    <ul class="shop-list">
+        {% for shop in coffee_shops %}
+            <li class="shop-item">
+                <h2>{{ shop.name }}</h2>
+                <p><strong>Location:</strong> {{ shop.address }}</p>
+                <p><strong>Rating:</strong> {{ shop.rating }} / 5</p>
+            </li>
+        {% else %}
+            <p>No coffee shops found.</p>
+        {% endfor %}
+    </ul>
 </body>
 
 </html>
