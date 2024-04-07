@@ -7,9 +7,8 @@ import os
 from urllib.parse import urlparse
 
 _ =load_dotenv(find_dotenv())
-client = OpenAI(
-    api_keys = os.environ.get('OPENAI_AP_KEY'),
-)
+
+OpenAI.api_key = os.environ.get('OPENAI_API_KEY')
 
 
 def encode_image(image_path):
@@ -17,7 +16,7 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 #TAKE IMAGES
-image_local = './26408-2.png'
+image_local = '../26408-2.png'
 image_url = f"data:image/jpeg;base64,{encode_image(image_local)}"
 #image_url = 'https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2021/02/19/ML-1955-2.jpg'
 
