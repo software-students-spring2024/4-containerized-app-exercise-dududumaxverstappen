@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result page</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            margin: 1;
+            padding: 0;
+        }
+
+        body {
+            background-color:#f6BDC2;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        .header {
+            padding: 10px;
+            height: 50px;
+            color : #e41e29;
+            align-items: center;
+            text-align: center;
+        }
+
+        .scrollable {
+            height: 400px;
+            overflow: auto;
+            padding-top: 10px; /* Adjusted spacing */
+        }
+
+        .unit {
+            margin-bottom: 10px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <p>ByteBite</p>
+        </div>
+    </div>
+
+
+    <div class="scrollable">
+    <div class="unit">
+        {% if search_query %}
+         <h2> Results</h2>
+    <a href="{{ url_for('show_search',post_id=bytebite['_id'])}}"> <!-- each post is a link to a page of j that post -->
+            <div class="post">
+                <p>{{ bytebite['_id'] }}</p>
+            </div>
+            </a>
+</body>
+
+</html>
