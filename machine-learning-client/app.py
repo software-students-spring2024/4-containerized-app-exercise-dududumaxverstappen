@@ -3,7 +3,7 @@ import requests
 from pymongo import MongoClient
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # set up mongo 
 mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
