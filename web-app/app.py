@@ -27,7 +27,7 @@ def home():
 def find_coffee_shops():
     
     data = request.get_json()
-    machine_learning_client_url = 'http://machine-learning:5000/find_coffee_shops'
+    machine_learning_client_url = 'http://localhost:5000/find_coffee_shops'
 
     # send data to machine learning model
     response = requests.post(machine_learning_client_url, json=data)

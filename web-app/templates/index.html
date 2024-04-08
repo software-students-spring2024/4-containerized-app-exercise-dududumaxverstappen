@@ -20,6 +20,7 @@
             color : #e41e29;
             align-items: center;
             text-align: center;
+            display: block;
         }
 
         .upload_container {
@@ -51,27 +52,44 @@
             text-align: center;
             margin-bottom: 50px;
         }
+        .button{
+            text-align: center;
+            font-size: 20px;
+            background-color:#e41e29;
+            color: white;
+            font-weight: bold;
+            padding: 5px;
+            border-color: white;
+            display: block;
+        }
+
+        .centered-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw; 
+            flex-direction: column;
+        }
 
   </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Java Junction</h1>
+
+    <div class="content">
+        <div class="centered-button">
+            <div class="header">
+                <h1>Java Junction</h1>
+            </div>
+        <button class="button" onclick="getUserLocation()">Find Cafes Near Me</button>
+        </div>
+        <div id="results"></div>
     </div>
-
-    <a href="{{ url_for('results') }}"><button onclick="getUserLocation()">Find Cafes</button></a>
-
     <script>
-        // get users location using geolocation API
         function getUserLocation() {
-            // check if geolocation is supported by the browser
-            if (navigator.geolocation){
-                // get current location
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-
-                    // send location to flask
                     fetch('/find_coffee_shops', {
                         method: 'POST',
                         headers: {
@@ -81,14 +99,23 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        
+                        // Assuming 'data' is the list of coffee shops returned from your Flask app,
+                        // you can dynamically create and add elements to display them here.
+                        // For demonstration, let's just log the data.
+                        console.log(data);
+                        const resultsDiv = document.getElementById('results');
+                        resultsDiv.innerHTML = ''; // Clear previous results
+                        // Dynamically display each coffee shop as needed
+                        data.forEach(shop => {
+                            const shopDiv = document.createElement('div');
+                            shopDiv.textContent = `Name: ${shop.name}, Location: ${shop.location}`;
+                            resultsDiv.appendChild(shopDiv);
+                        });
                     })
                     .catch(error => console.error('Error:', error));
                 });
-            } 
-            // if geolocation is not supported by the browser
-            else{
-                document.getElementById("results").innerHTML = "Geolocation is not supported by this browser.";
+            } else {
+                document.getElementById("results").textContent = "Geolocation is not supported by this browser.";
             }
         }
     </script>
