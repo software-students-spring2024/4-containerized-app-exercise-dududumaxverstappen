@@ -27,6 +27,7 @@ def home():
 def find_coffee_shops():
     
     data = request.get_json()
+    # this is def where the error is 
     machine_learning_client_url = 'http://localhost:5000/find_coffee_shops'
 
     # send data to machine learning model
