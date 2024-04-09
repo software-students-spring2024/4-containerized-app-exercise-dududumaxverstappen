@@ -25,19 +25,41 @@ def home():
 # get users location and forward to machine learning model
 @app.route('/find_coffee_shops', methods=['POST'])
 def find_coffee_shops():
-    
     data = request.get_json()
-    # this is def where the error is 
-    machine_learning_client_url = 'http://localhost:5000/find_coffee_shops'
-
-    # send data to machine learning model
-    response = requests.post(machine_learning_client_url, json=data)
+    
+    # get long and lat
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    
+    if latitude is None or longitude is None:
+        return jsonify({'error': 'Latitude and longitude are required parameters.'}), 400
+    
+    # api key and parameters for google places
+    api_key = 'AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY' 
+    radius = 1000  # ADJUSTABLE
+    types = 'cafe'  # search only cafes
+    
+    # google api request
+    url = f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude},{longitude}&radius={radius}&type={types}&key={api_key}'
+    response = requests.get(url)
     
     if response.status_code == 200:
-        return response.json()
-    else:
-        return jsonify({'error': 'error in finding coffee shops!'}), 500
+    # get info from api
+        coffee_shops = []
+        for place in response.json().get('results', []):
+            # get a photo of coffeeshop 
+            photo_reference = place['photos'][0]['photo_reference'] if 'photos' in place and len(place['photos']) > 0 else None
+            
+            coffee_shops.append({
+                'name': place['name'],
+                'vicinity': place.get('vicinity'),  # vicinity = address in google places 
+                'rating': place.get('rating'),  
+                'photo_reference': photo_reference
+            })
 
+        return jsonify({'coffee_shops': coffee_shops})
+    else:
+        return jsonify({'error': 'Failed to fetch coffee shops from Google Places API.'}), 500
 
 
 # show all results

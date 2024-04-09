@@ -14,6 +14,10 @@
             background-color: #f6BDC2;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
+        div{
+            width: 300px;
+            display: grid;
+        }
         .header {
             padding: 10px;
             height: 50px;
@@ -21,6 +25,9 @@
             align-items: center;
             text-align: center;
             display: block;
+        }
+        h3{
+            color : #e41e29;
         }
 
         .upload_container {
@@ -31,7 +38,9 @@
             margin-top: 10%;
             
         }
-        
+        p{
+            font-size: 14px;
+        }
         .upload_button {
             padding: 10px 20px;
             background-color: #ef5661;
@@ -70,6 +79,32 @@
             width: 100vw; 
             flex-direction: column;
         }
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+            gap: 10px; 
+            justify-content: center; 
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        /* each coffee shop under results */
+        #results div {
+            border: 1px solid white; 
+            border-radius: 8px; 
+            padding: 15px; 
+            display: inline;
+        }
+        #results img {
+            width: 100%; /* Make images responsive */
+        }
+
 
   </style>
 </head>
@@ -88,7 +123,6 @@
         function getUserLocation() {
             if (navigator.geolocation) {
                 console.log('user location worked');
-                console.log(navigator.geolocation)
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
@@ -103,11 +137,16 @@
                     .then(data => {
                         console.log(data);
                         const resultsDiv = document.getElementById('results');
-                        resultsDiv.innerHTML = ''; // clear 
-                        // dynamic - fill in the page with coffee shots
-                        data.forEach(shop => {
+                        resultsDiv.innerHTML = ''; // Clear previous results
+                        
+                        data.coffee_shops.forEach(shop => {
                             const shopDiv = document.createElement('div');
-                            shopDiv.textContent = `Name: ${shop.name}, Location: ${shop.location}`;
+                            shopDiv.innerHTML = `
+                                <h3>${shop.name}</h3>
+                                <p>Address: ${shop.vicinity}</p>
+                                <p>Rating: ${shop.rating}\u2B50</p>
+                                ${shop.photo_reference ? `<img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${shop.photo_reference}&key=AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY" alt="${shop.name}">` : ''}
+                            `;
                             resultsDiv.appendChild(shopDiv);
                         });
                     })
@@ -119,6 +158,6 @@
             }
         }
     </script>
-
+    
 </body>
 </html>
