@@ -17,7 +17,7 @@ def find_cafes():
     latitude = data['latitude']
     longitude = data['longitude']
 
-    google_api_key = 'AIzaSyBPekmNdy7JNyy9ngxDyEOKpy1RIKeirWs'  # Replace with your actual Google API Key
+    google_api_key = 'AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY'  # google api
     places_url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude},{longitude}&radius=1000&type=cafe&key={api_key}"
     response = requests.get(places_url)
     results = response.json().get('results', [])
@@ -42,5 +42,5 @@ def find_cafes():
 
     return jsonify(simplified_results)
 
-if _name_ == '_main_':
+if __name__ == '_main_':
     app.run(debug=True, port=5001)

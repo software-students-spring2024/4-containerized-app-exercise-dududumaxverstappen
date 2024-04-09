@@ -87,6 +87,8 @@
     <script>
         function getUserLocation() {
             if (navigator.geolocation) {
+                console.log('user location worked');
+                console.log(navigator.geolocation)
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
@@ -99,13 +101,10 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        // Assuming 'data' is the list of coffee shops returned from your Flask app,
-                        // you can dynamically create and add elements to display them here.
-                        // For demonstration, let's just log the data.
                         console.log(data);
                         const resultsDiv = document.getElementById('results');
-                        resultsDiv.innerHTML = ''; // Clear previous results
-                        // Dynamically display each coffee shop as needed
+                        resultsDiv.innerHTML = ''; // clear 
+                        // dynamic - fill in the page with coffee shots
                         data.forEach(shop => {
                             const shopDiv = document.createElement('div');
                             shopDiv.textContent = `Name: ${shop.name}, Location: ${shop.location}`;
@@ -115,6 +114,7 @@
                     .catch(error => console.error('Error:', error));
                 });
             } else {
+                console.log('NOT WORKING');
                 document.getElementById("results").textContent = "Geolocation is not supported by this browser.";
             }
         }
