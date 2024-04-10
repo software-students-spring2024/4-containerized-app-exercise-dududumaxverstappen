@@ -3,19 +3,30 @@ import pymongo
 from pymongo import MongoClient
 import os
 import requests
-
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 
-app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/coffee_shops')
+#app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/coffee_shops')
 
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("MONGODB_PW")
 DB_HOST = os.getenv("DB_HOST")
 uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/?retryWrites=true&w=majority&appName=Cluster0&tlsAllowInvalidCertificates=true"
+#uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/?retryWrites=true&w=majority&appName=coffeeShops"
 client = pymongo.MongoClient(uri)
 db = client.get_database("cafes")
+user_collection = db.get_collection("cafes")
 
+
+try:
+    # verify the connection works by pinging the database
+    client.admin.command("ping")  # The ping command is cheap and does not require auth.
+    print(" *", "Connected to MongoDB!")  # if we get here, the connection worked!
+except Exception as e:
+    # the ping command failed, so the connection is not available.
+    print(" * ERRORRR", e)  # debug
 
 @app.route('/')
 def home():
@@ -36,7 +47,7 @@ def find_coffee_shops():
     
     # api key and parameters for google places
     api_key = 'AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY' 
-    radius = 1000  # ADJUSTABLE
+    radius = 400  # ADJUSTABLE
     types = 'cafe'  # search only cafes
     
     # google api request
