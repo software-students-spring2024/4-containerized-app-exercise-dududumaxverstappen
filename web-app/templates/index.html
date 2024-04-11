@@ -14,150 +14,54 @@
             background-color: #f6BDC2;
             font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
-        div{
-            width: 300px;
-            display: grid;
-        }
-        .header {
-            padding: 10px;
-            height: 50px;
-            color : #e41e29;
-            align-items: center;
+        .container{
+            height: 800px;
+            width: 700px;
+            border-radius: 10%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
             text-align: center;
-            display: block;
         }
-        h3{
-            color : #e41e29;
-        }
-
-        .upload_container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 35px;
+        #videoElement {
+            border-radius: 8%;
+            border: solid #ff3445 4px;
+            transform: scaleX(-1);
             margin-top: 10%;
-            
         }
-        p{
-            font-size: 14px;
-        }
-        .upload_button {
-            padding: 10px 20px;
-            background-color: #ef5661;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .take_button {
-            padding: 10px 26px;
-            background-color: #ef5661;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .button{
-            text-align: center;
-            font-size: 20px;
-            background-color:#e41e29;
-            color: white;
-            font-weight: bold;
-            padding: 5px;
-            border-color: white;
-            display: block;
+        h2{
+            color: #ff3445;
         }
 
-        .centered-button{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100vw; 
-            flex-direction: column;
-        }
-        img {
-            width: 250px;
-            height: 250px;
-            object-fit: cover;
-        }
-
-        #results {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
-            gap: 10px; 
-            justify-content: center; 
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        /* each coffee shop under results */
-        #results div {
-            border: 1px solid white; 
-            border-radius: 8px; 
-            padding: 15px; 
-            display: inline;
-        }
-        #results img {
-            width: 100%; /* Make images responsive */
-        }
 
 
   </style>
 </head>
 <body>
 
-    <div class="content">
-        <div class="centered-button">
-            <div class="header">
-                <h1>Java Junction</h1>
-            </div>
-        <button class="button" onclick="getUserLocation()">Find Cafes Near Me</button>
-        </div>
-        <div id="results"></div>
-    </div>
+<div class="container">
+    <video id="videoElement" autoplay></video>
     <script>
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                console.log('user location worked');
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    fetch('/find_coffee_shops', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({latitude: latitude, longitude: longitude})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        const resultsDiv = document.getElementById('results');
-                        resultsDiv.innerHTML = ''; // Clear previous results
-                        
-                        data.coffee_shops.forEach(shop => {
-                            const shopDiv = document.createElement('div');
-                            shopDiv.innerHTML = `
-                                <h3>${shop.name}</h3>
-                                <p>Address: ${shop.vicinity}</p>
-                                <p>Rating: ${shop.rating}\u2B50</p>
-                                ${shop.photo_reference ? `<img src="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${shop.photo_reference}&key=AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY" alt="${shop.name}">` : ''}
-                            `;
-                            resultsDiv.appendChild(shopDiv);
-                        });
-                    })
-                    .catch(error => console.error('Error:', error));
+        // create video element
+        var video = document.getElementById("videoElement");
+
+        // get camera
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    //stream video element
+                    video.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error("ERROR - cannot access camera ", error);
                 });
-            } else {
-                console.log('NOT WORKING');
-                document.getElementById("results").textContent = "Geolocation is not supported by this browser.";
-            }
         }
     </script>
+    <h2>title/instructions</h2>
+
+</div>
     
 </body>
 </html>
