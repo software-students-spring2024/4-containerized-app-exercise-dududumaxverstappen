@@ -1,46 +1,107 @@
-from flask import Flask, request, jsonify
-import requests
-from pymongo import MongoClient
-import os
+from matplotlib import pyplot as plt
+import mediapipe as mp
+from mediapipe.framework.formats import landmark_pb2
+import cv2
+import math
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+#input images
+import cv2
+import mediapipe as mp
 
-app = Flask(__name__)
 
-# set up mongo 
-mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
-db = mongo_client['cafes']  # db name
-cafesCollection = db['cafes']  # collection name
-api_key = os.environ.get('GOOGLE_API_KEY')
 
-@app.route('/find_cafes', methods=['POST'])
-def find_cafes():
-    data = request.get_json()
-    latitude = data['latitude']
-    longitude = data['longitude']
+plt.rcParams.update({
+    'axes.spines.top': False,
+    'axes.spines.right': False,
+    'axes.spines.left': False,
+    'axes.spines.bottom': False,
+    'xtick.labelbottom': False,
+    'xtick.bottom': False,
+    'ytick.labelleft': False,
+    'ytick.left': False,
+    'xtick.labeltop': False,
+    'xtick.top': False,
+    'ytick.labelright': False,
+    'ytick.right': False
+})
 
-    google_api_key = 'AIzaSyC4jaf9Xb9_yFj-wl_hLJjL3CxXhGN1WfY'  # google api
-    places_url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude},{longitude}&radius=1000&type=cafe&key={api_key}"
-    response = requests.get(places_url)
-    results = response.json().get('results', [])
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
-    # cafe data -> mongo db
-    # pull stats from json
-    # insert into collection 
-    for cafe in results:
-        cafe_data = {
-            "name": cafe.get("name"),
-            "location": cafe["geometry"]["location"],
-            "vicinity": cafe.get("vicinity"),
-            "rating": cafe.get("rating"),
-            "user_ratings_total": cafe.get("user_ratings_total")
-        }
-        cafesCollection.insert_one(cafe_data)
+#Setup input from camera
+cap=cv2.VideoCapture(0)
+hands=mp_hands.Hands()
 
-    # basic info - name and location of cafe
-    simplified_results = [
-        {"name": cafe.get("name"), "address": cafe.get("vicinity")} for cafe in results
-    ]
+#DEFINING FUNCTIONS 
+#Match gesture with emoji
+def emoji(category_name):
+    gesture_emojis = {
+        'Closed_Fist': '\u270A',
+        'Open_Palm': '\u270B',
+        'Pointing_Up': '\U0001F446',
+        'Thumb_Down': '\U0001F44E',
+        'Thumb_Up': '\U0001F44D',
+        'Victory': '\u270C',
+        'ILoveYou': '\U0001FAF6'
+    }
+"""def emoji(hand):
+    if hand == 'Closed_Fist':
+        print('\u270A')  
+    elif hand == 'Open_Palm':
+        print('\u270B')  
+    elif hand == 'Pointing_Up':
+        print('\U0001F446')  
+    elif hand == 'Thumb_Down':
+        print('\U0001F44E')  
+    elif hand == 'Thumb_Up':
+        print('\U0001F44D')  
+    elif hand == 'Victory':
+        print('\u270C')  
+    elif hand == 'ILoveYou':
+        print('\U0001FAF6')"""
 
-    return jsonify(simplified_results)
 
-if __name__ == '_main_':
-    app.run(debug=True, port=5001)
+#Create an GestureRecognizer object.
+base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+options = vision.GestureRecognizerOptions(base_options=base_options)
+recognizer = vision.GestureRecognizer.create_from_options(options)
+
+
+
+try:
+    while True:
+        data, image = cap.read()
+        if not data:
+            continue  # Skip the rest of the loop if frame capture failed
+        # Image processing
+        image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+        results = hands.process(image)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        # Draw landmarks
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                mp_drawing.draw_landmarks(
+                    image,
+                    hand_landmarks,
+                    mp_hands.HAND_CONNECTIONS,
+                    mp_drawing.DrawingSpec(color=(121, 22, 76), thickness=2, circle_radius=4),
+                    mp_drawing.DrawingSpec(color=(250, 44, 250), thickness=2, circle_radius=2),
+                )
+
+        cv2.imshow('Hand Tracker', image)
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # Press 'q' to quit
+            break
+
+        # Gesture recognition and emoji output
+        if results.multi_hand_landmarks:
+            top_gesture = results.multi_hand_landmarks[0]  # Assuming the first found hand
+            emoji(top_gesture.category_name)  # This will not work directly; placeholder for real implementation
+
+        input("Press Enter to capture next gesture...")  # Wait for user input to continue
+
+finally:
+    cap.release()
+    cv2.destroyAllWindows()
