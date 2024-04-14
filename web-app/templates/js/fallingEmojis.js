@@ -5,6 +5,9 @@ var fallingEmojis = []; // Array to hold the falling emojis
 var emoji = '🎈'; // The emoji to fall
 var releaseInterval = 2000; // Interval in milliseconds after which a new emoji is released
 
+let animationDuration = 10000; 
+let startTime = null;
+
 function addFallingEmojis() {
   fallingEmojis.push({
     x: Math.random() * canvas.width, // Random x position
@@ -30,8 +33,9 @@ function drawEmojis() {
 setInterval(addFallingEmojis, releaseInterval);
 
 function animate() {
-  drawEmojis(); // Draw and move emojis
-  requestAnimationFrame(animate); // Continue the loop
+  drawEmojis(); 
+  requestAnimationFrame(animate); 
 }
 
-animate(); // Start the animation loop
+animate(); 
+
