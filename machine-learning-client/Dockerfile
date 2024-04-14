@@ -1,26 +1,12 @@
-FROM python:3.10.3-slim-bullseye
+FROM python:3.8-slim
 
-WORKDIR /app/machine_learning_client
+WORKDIR /machine_learning_client
 
-COPY requirements.txt ./
+COPY machine_learning_client/ ./
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    libgl1-mesa-glx libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt && apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
-RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 5002
 
-COPY . /app/machine_learning_client
-
-EXPOSE 5001
-
-ENV MONGODB_URI="mongodb://mongo:27017/"
-ENV MONGODB_DATABASE="cafes"
-
-CMD ["python", "app.py", "python3"]
+CMD ["python3", "flask", "run", "--port=5002"]

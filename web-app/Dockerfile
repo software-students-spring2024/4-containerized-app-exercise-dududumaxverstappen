@@ -1,12 +1,12 @@
-FROM python:3.8-slim-buster
+FROM python:3.9
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-ADD . .
+COPY . .
 
-EXPOSE 4999
+EXPOSE 5001
 
-CMD ["python3", "python", "-m", "flask", "run", "--port=5002"]
+CMD ["python3", "flask", "run", "--port=5002"]
