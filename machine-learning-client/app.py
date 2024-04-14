@@ -9,7 +9,18 @@ from mediapipe.tasks.python import vision
 #input images
 import cv2
 import mediapipe as mp
+from flask import Flask, request, jsonify
+import requests
+from pymongo import MongoClient
+import os
 
+app = Flask(__name__)
+
+# set up mongo 
+mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
+db = mongo_client['cafes']
+gestureDB = db['gestures']
+# collection name
 
 
 plt.rcParams.update({
@@ -99,8 +110,11 @@ try:
         if results.multi_hand_landmarks:
             top_gesture = results.multi_hand_landmarks[0]  # Assuming the first found hand
             emoji(top_gesture.category_name)  # This will not work directly; placeholder for real implementation
+            gesturetolandmark = { "result": { "top_gesture": top_gesture, "hand_landmark" : hand_landmarks }}
 
+            x = gestureDB.insert_one(gesturetolandmark)
         input("Press Enter to capture next gesture...")  # Wait for user input to continue
+
 
 finally:
     cap.release()
