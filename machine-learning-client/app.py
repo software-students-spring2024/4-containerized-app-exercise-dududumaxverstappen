@@ -1,24 +1,16 @@
 import mediapipe as mp
 import cv2
-from pymongo import MongoClient
-from datetime import datetime
-
-
-try:
-    uri = "mongodb://mongodb:27017/"
-    client = MongoClient(uri)
-    client.admin.command("ping")
-    db = client["gestures"]
-    print("Connected!")
-
-except Exception as e:
-    print(f"Not connected: {e}")
+#from pymongo import MongoClient
 
 BaseOptions = mp.tasks.BaseOptions
 GestureRecognizer = mp.tasks.vision.GestureRecognizer
 GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
 GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
+
+"""mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
+db = mongo_client['cafes']
+gestureDB = db['gestures']"""
 
 video = cv2.VideoCapture(0)
 
@@ -47,13 +39,12 @@ def print_result(result: GestureRecognizerResult, output_image: mp.Image, timest
         for gesture_list in result.gestures:
             for gesture in gesture_list:
                 #print(f"Gesture: {gesture.category_name}, Score: {gesture.score}")
-                emoji(gesture.category_name)  # Removed the curly braces
-                gesturetolandmark = { 
-                                     "timestamp": datetime.now(),
-                                     "result": { "top_gesture": gesture.category_name, "score" : gesture.score }
-                                    }
-                x = db.insert_one(gesturetolandmark)
-
+                emoji(gesture.category_name) # Removed the curly braces
+                
+                """
+                gesturetolandmark = { "result": { "top_gesture": gesture.category_name, "score" : gesture.score }}
+                gestureDB.insert_one(gesturetolandmark)
+                """
 
 
 options = GestureRecognizerOptions(
