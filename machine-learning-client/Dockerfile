@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 WORKDIR /machine_learning_client
 
@@ -9,4 +9,4 @@ RUN pip install --upgrade pip \
 
 EXPOSE 5002
 
-CMD ["python3", "flask", "run", "--port=5002"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=5002"]
