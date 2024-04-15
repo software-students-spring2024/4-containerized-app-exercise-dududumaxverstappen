@@ -3,9 +3,16 @@ import cv2
 from pymongo import MongoClient
 from datetime import datetime
 
-mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
-db = mongo_client['cafes']
-gestureDB = db['gestures']
+
+try:
+    uri = "mongodb://mongodb:27017/"
+    client = MongoClient(uri)
+    client.admin.command("ping")
+    db = client["gestures"]
+    print("Connected!")
+
+except Exception as e:
+    print(f"Not connected: {e}")
 
 BaseOptions = mp.tasks.BaseOptions
 GestureRecognizer = mp.tasks.vision.GestureRecognizer
@@ -45,7 +52,7 @@ def print_result(result: GestureRecognizerResult, output_image: mp.Image, timest
                                      "timestamp": datetime.now(),
                                      "result": { "top_gesture": gesture.category_name, "score" : gesture.score }
                                     }
-                x = gestureDB.insert_one(gesturetolandmark)
+                x = db.insert_one(gesturetolandmark)
 
 
 
