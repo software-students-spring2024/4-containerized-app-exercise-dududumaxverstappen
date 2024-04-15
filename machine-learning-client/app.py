@@ -1,76 +1,87 @@
 import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 import cv2
+import base64
+import numpy as np
+from flask import Flask, request, jsonify
 from pymongo import MongoClient
 
-BaseOptions = mp.tasks.BaseOptions
-GestureRecognizer = mp.tasks.vision.GestureRecognizer
-GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
-GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
-VisionRunningMode = mp.tasks.vision.RunningMode
+app = Flask(__name__)
 
-mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
-db = mongo_client['gestures']
-gestureDB = db['emoji']
 
-video = cv2.VideoCapture(0)
+try:
+    uri = "mongodb://mongodb:27017/"
+    client = MongoClient(uri)
+    client.admin.command("ping")
+    db = client["gestures"]
+    print("Connected!")
+
+except Exception as e:
+    print(e)
+
+
+base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+options = vision.GestureRecognizerOptions(base_options=base_options)
+recognizer = vision.GestureRecognizer.create_from_options(options)
+
 
 def emoji(hand):
     if hand == 'Closed_Fist':
-        return "\u270A"  
+        return "\u270A"
+        #print("\u270A")  
     elif hand == 'Open_Palm':
-        return "\u270B"  
+        return "\u270B"
+        #print("\u270B")  
     elif hand == 'Pointing_Up':
-        return "\U0001F446" 
+        return "\U0001F446"
+        #print("\U0001F446")  
     elif hand == 'Thumb_Down':
-        return "\U0001F44E" 
+        return "\U0001F44E"
+        #print("\U0001F44E")  
     elif hand == 'Thumb_Up':
-        return "\U0001F44D"  
+        return "\U0001F44D"
+        #print("\U0001F44D")  
     elif hand == 'Victory':
-        return "\u270C"  
+        return "\u270C"
+        #print("\u270C")  
     elif hand == 'ILoveYou':
         return "\U0001F91F"
-
-# Create a image segmenter instance with the live stream mode:
-
-def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
-    # Displaying gesture recognition results
-    if result.gestures:
-        for gesture_list in result.gestures:
-            for gesture in gesture_list:
-                print(emoji(gesture.category_name)) # Removed the curly braces
-                #render_template('fallingEMojis.html')
-                
-                if gesture.category_name!='None':
-                    gesturetolandmark = { "top_gesture": gesture.category_name, "score" : gesture.score, "emoji" : emoji(gesture.category_name)}
-                    gestureDB.insert_one(gesturetolandmark)
+        #print("\U0001F91F")
+    # if no gesture detected then return question mark emoji
+    else:
+        return "\U00002753"
 
 
-options = GestureRecognizerOptions(
-    base_options=BaseOptions(model_asset_path='gesture_recognizer.task'),
-    running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+@app.route('/server_endpoint', methods=['POST'])
+def handle_image():
+    data = request.json['image']
+    # Decode the data URL
+    header, encoded = data.split(",", 1)
+    data = base64.b64decode(encoded)
+    # Convert to a numpy array
+    nparr = np.frombuffer(data, np.uint8)
+    # Decode image
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    # Now you can save this image and use create_from_file or process directly
+    cv2.imwrite('captured_image.png', img)
+    # Assuming create_from_file() is now appropriate
+    processed_image = gesture('captured_image.png')
+    return "Image processed"
 
-timestamp = 0
-with GestureRecognizer.create_from_options(options) as recognizer:
-  # The recognizer is initialized. Use it here.
-    while video.isOpened(): 
-        # Capture frame-by-frame
-        ret, frame = video.read()
 
-        if not ret:
-            print("Ignoring empty frame")
-            break
+@app.route('/gesture', methods=['POST'])
+def gesture(captured_image):
+    image = mp.Image.create_from_file('captured_image')
+    recognition_result = recognizer.recognize(image)
 
-        timestamp += 1
-        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-        # Send live image data to perform gesture recognition
-        # The results are accessible via the `result_callback` provided in
-        # the `GestureRecognizerOptions` object.
-        # The gesture recognizer must be created with the live stream mode.
-        recognizer.recognize_async(mp_image, timestamp)
+    # Process the result.
+    top_gesture = recognition_result.gestures[0][0] # The top recognized gesture
+    hand_landmarks = recognition_result.hand_landmarks # Detected hand landmarks
+    ges_emoji = emoji(top_gesture)
 
-        if cv2.waitKey(5) & 0xFF == 27:
-            break
+    # insert the gesture to the database
+    gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
+    db.insert_one(gesturetolandmark)
 
-video.release()
-cv2.destroyAllWindows()
+

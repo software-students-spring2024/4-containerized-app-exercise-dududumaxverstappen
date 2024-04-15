@@ -40,28 +40,10 @@
   </style>
 </head>
 <body>
-
-<div class="container">
-    <video id="videoElement" autoplay></video>
-    <script>
-        // create video element
-        var video = document.getElementById("videoElement");
-
-        // get camera
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    //stream video element
-                    video.srcObject = stream;
-                })
-                .catch(function(error) {
-                    console.error("ERROR - cannot access camera ", error);
-                });
-        }
-    </script>
-    <h2>title/instructions</h2>
-
-</div>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="capture">Capture</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <script src="js/cam.js"></script>
     
 </body>
 </html>
