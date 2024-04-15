@@ -1,6 +1,7 @@
 import mediapipe as mp
 import cv2
 from pymongo import MongoClient
+from datetime import datetime
 
 mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
 db = mongo_client['cafes']
@@ -40,7 +41,10 @@ def print_result(result: GestureRecognizerResult, output_image: mp.Image, timest
             for gesture in gesture_list:
                 #print(f"Gesture: {gesture.category_name}, Score: {gesture.score}")
                 emoji(gesture.category_name)  # Removed the curly braces
-                gesturetolandmark = { "result": { "top_gesture": gesture.category_name, "score" : gesture.score }}
+                gesturetolandmark = { 
+                                     "timestamp": datetime.now(),
+                                     "result": { "top_gesture": gesture.category_name, "score" : gesture.score }
+                                    }
                 x = gestureDB.insert_one(gesturetolandmark)
 
 
