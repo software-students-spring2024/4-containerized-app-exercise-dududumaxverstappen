@@ -1,6 +1,6 @@
 import mediapipe as mp
 import cv2
-#from pymongo import MongoClient
+from pymongo import MongoClient
 
 BaseOptions = mp.tasks.BaseOptions
 GestureRecognizer = mp.tasks.vision.GestureRecognizer
@@ -8,28 +8,27 @@ GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
 GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
-"""mongo_client = MongoClient('mongodb+srv://bcdy:n7ZL4YrKcJac2SeT@cafes.cm5pzwe.mongodb.net/?retryWrites=true&w=majority&appName=cafes')
-db = mongo_client['cafes']
-gestureDB = db['gestures']"""
+mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
+db = mongo_client['gestures']
+gestureDB = db['emoji']
 
 video = cv2.VideoCapture(0)
 
 def emoji(hand):
     if hand == 'Closed_Fist':
-        print("\u270A")  
+        return "\u270A"  
     elif hand == 'Open_Palm':
-        print("\u270B")  
+        return "\u270B"  
     elif hand == 'Pointing_Up':
-        print("\U0001F446")  
+        return "\U0001F446" 
     elif hand == 'Thumb_Down':
-        print("\U0001F44E")  
+        return "\U0001F44E" 
     elif hand == 'Thumb_Up':
-        print("\U0001F44D")  
+        return "\U0001F44D"  
     elif hand == 'Victory':
-        print("\u270C")  
+        return "\u270C"  
     elif hand == 'ILoveYou':
-        print("\U0001F91F")
-
+        return "\U0001F91F"
 
 # Create a image segmenter instance with the live stream mode:
 
@@ -38,13 +37,12 @@ def print_result(result: GestureRecognizerResult, output_image: mp.Image, timest
     if result.gestures:
         for gesture_list in result.gestures:
             for gesture in gesture_list:
-                #print(f"Gesture: {gesture.category_name}, Score: {gesture.score}")
-                emoji(gesture.category_name) # Removed the curly braces
+                print(emoji(gesture.category_name)) # Removed the curly braces
+                #render_template('fallingEMojis.html')
                 
-                """
-                gesturetolandmark = { "result": { "top_gesture": gesture.category_name, "score" : gesture.score }}
-                gestureDB.insert_one(gesturetolandmark)
-                """
+                if gesture.category_name!='None':
+                    gesturetolandmark = { "top_gesture": gesture.category_name, "score" : gesture.score, "emoji" : emoji(gesture.category_name)}
+                    gestureDB.insert_one(gesturetolandmark)
 
 
 options = GestureRecognizerOptions(
