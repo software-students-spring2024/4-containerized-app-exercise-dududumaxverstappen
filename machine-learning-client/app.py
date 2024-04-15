@@ -11,10 +11,9 @@ app = Flask(__name__)
 
 
 try:
-    uri = "mongodb://mongodb:27017/"
-    client = MongoClient(uri)
-    client.admin.command("ping")
-    db = client["gestures"]
+    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
+    db = mongo_client['gestures']
+    gestureDB = db['emoji']
     print("Connected!")
 
 except Exception as e:
@@ -66,13 +65,12 @@ def handle_image():
     # Now you can save this image and use create_from_file or process directly
     cv2.imwrite('captured_image.png', img)
     # Assuming create_from_file() is now appropriate
-    processed_image = gesture('captured_image.png')
-    return "Image processed"
+
+    return gesture('captured_image.png')
 
 
-@app.route('/gesture', methods=['POST'])
-def gesture(captured_image):
-    image = mp.Image.create_from_file('captured_image')
+def gesture(image_path):
+    image = mp.Image.create_from_file(image_path)
     recognition_result = recognizer.recognize(image)
 
     # Process the result.
@@ -82,6 +80,9 @@ def gesture(captured_image):
 
     # insert the gesture to the database
     gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
-    db.insert_one(gesturetolandmark)
+    gestureDB.insert_one(gesturetolandmark)
+    
+    
+
 
 
