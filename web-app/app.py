@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify, render_template, Response
 from pymongo import MongoClient
+from PIL import Image
 import os
 import requests
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from flask_cors import CORS
 
 
-load_dotenv()
+
 app = Flask(__name__)
+CORS(app)
+
 CORS(app)
 
 
@@ -15,8 +18,9 @@ CORS(app)
 try:
     uri = "mongodb://mongodb:27017/"
     client = MongoClient(uri)
-    client.admin.command("ping")
+    #client.admin.command("ping")
     db = client["gestures"]
+    gestureDB = db["emoji"]
     print("Connected!")
 
 except Exception as e:
@@ -42,15 +46,24 @@ def emoji(hand):
 
 # show home page
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
+
+
+"""# upload pic
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['picture']
+    picture = Image.open(file)"""
+    
+    
 
 
 # get last emoji from database
 @app.route('/get_emoji', methods=['GET'])
 def get_emoji():
     # Retrieve latest emoji from MongoDB
-    latest_gesture = db.find_one(
+    latest_gesture = gestureDB.find_one(
         {},
         sort=[('timestamp', -1)]
     )
@@ -66,14 +79,9 @@ def results():
     return render_template('fallingEmojis.html')
 
 
-
-
-
 # ---------------------------------------------------------------------------- #
 #                                     main                                     #
 # ---------------------------------------------------------------------------- #
 
-# run the app
-if __name__ == "__main__":
-    FLASK_PORT = os.getenv("FLASK_PORT", "4040")
-    app.run(port=FLASK_PORT, host="0.0.0.0")
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)
