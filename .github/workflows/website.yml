@@ -1,0 +1,34 @@
+name: CI/CD for Web App
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    types: [opened, closed]
+    branches: [main, master]
+
+permissions:
+  contents: read
+      
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint black flask pymongo pillow requests flask-cors
+    - name: Run Pylint
+      run: pylint web-app/**/*.py --ignore-patterns='*.pb2.py,*.pb2_grpc.py'
+    - name: Run Black (Check mode)
+      run: black --check web-app/
+    - name: Run tests
+      run: echo "Add your test commands here"
+    - name: Deploy
+      run: echo "Add your deployment commands here"
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -150,40 +150,6 @@ def test_route():
     return 'Test route is working', 200
 
 
-
-'''
-def gesture(image_path):
-    try:
-        image = mp.Image.create_from_file(image_path)
-        recognition_result = recognizer.recognize(image)
-        top_gesture = recognition_result.gestures[0][0]  # Assuming only one gesture is recognized
-        ges_emoji = emoji(top_gesture)
-        
-        gesturetolandmark = {"result": {"top_gesture": top_gesture, "emoji": ges_emoji}}
-        gestureDB.insert_one(gesturetolandmark)
-        # for testing
-        print(top_gesture)
-        return jsonify(gesturetolandmark), 200
-
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Error processing the image"}), 500
-'''
-    
-"""
-    image = mp.Image.create_from_file(image_path)
-    recognition_result = recognizer.recognize(image)
-
-    # Process the result.
-    top_gesture = recognition_result.gestures[0][0] # The top recognized gesture
-    hand_landmarks = recognition_result.hand_landmarks # Detected hand landmarks
-    ges_emoji = emoji(top_gesture)
-
-    # insert the gesture to the database
-    gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
-    gestureDB.insert_one(gesturetolandmark)
-"""
-
 @app.route('/favicon.ico')
 def favicon():
     return app.send_static_file('favicon.ico')
