@@ -40,6 +40,10 @@ recognizer = vision.GestureRecognizer.create_from_options(options)
 
 
 def emoji(hand):
+    if hand is None:
+        # if no gesture detected then return question mark emoji
+        return "\U00002753"
+        
     if hand == 'Closed_Fist':
         return "\u270A"
         #print("\u270A")  
@@ -61,9 +65,9 @@ def emoji(hand):
     elif hand == 'ILoveYou':
         return "\U0001F91F"
         #print("\U0001F91F")
-    # if no gesture detected then return question mark emoji
-    else:
-        return "\U00002753"
+    
+
+        
 
 
 @app.route('/process_img', methods=['POST'])
@@ -93,11 +97,18 @@ def process_img():
         try:
             image = mp.Image.create_from_file(img_path)
             recognition_result = recognizer.recognize(image)
-            # top_gesture gives: Category(index=-1, score=0.7499747276306152, display_name='', category_name='Open_Palm')
-            top_gesture = recognition_result.gestures[0][0]  # Assuming only one gesture is recognized
-            ges_name = top_gesture.category_name    # gives the name, ex: Open_Palm
-            ges_emoji = emoji(ges_name)     # get emoji unicode
-            print("GOT GESTUREEEEE: " + ges_name + ges_emoji)     # this is giving the enture category
+            
+            if not recognition_result.gestures:
+                #print("No gesture detected")
+                ges_name = 'No gesture detected'
+                ges_emoji = emoji(None)
+            else:    
+                # top_gesture gives: Category(index=-1, score=0.7499747276306152, display_name='', category_name='Open_Palm')
+                top_gesture = recognition_result.gestures[0][0]  # Assuming only one gesture is recognized
+                
+                ges_name = top_gesture.category_name    # gives the name, ex: Open_Palm
+                ges_emoji = emoji(ges_name)     # get emoji unicode
+                print("GOT GESTUREEEEE: " + ges_name + ges_emoji)     # this is giving the enture category
             
             gesturetolandmark = {
                                  "timestamp": datetime.now(),
