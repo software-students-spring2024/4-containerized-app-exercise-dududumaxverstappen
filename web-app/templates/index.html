@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe near you</title>
+  <title>emojis!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <style>
     * {
@@ -58,18 +58,47 @@
       <canvas id="canvas" width="640" height="480"></canvas>
     </div>
     <script src="js/cam.js"></script>
+    
     <script>
-      // stream video in front end 
       const video = document.getElementById('videoElement');
-  
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          video.srcObject = stream;
-        })
-        .catch(err => {
-          console.error('Error accessing the camera:', err);
-        });
-    </script>
+    const canvas = document.getElementById('canvas');
+    const captureButton = document.getElementById('capture');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error('Error accessing the camera:', err);
+      });
+
+    // Function to capture image from video stream
+    function capture() {
+      const context = canvas.getContext('2d');
+      //context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+
+      // Send image data to server
+      fetch('/server_endpoint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image: imageData })
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Image sent successfully.');
+          // Optionally, you can handle the response from the server here
+        } else {
+          console.error('Failed to send image:', response.statusText);
+        }
+      })
+      .catch(error => {
+        console.error('Error sending image:', error);
+      });
+    }
+  </script>
   </body>
 
 </html>

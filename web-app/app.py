@@ -3,11 +3,13 @@ from pymongo import MongoClient
 import os
 import requests
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 
 load_dotenv()
-
 app = Flask(__name__)
+CORS(app)
+
 
 
 try:
@@ -71,6 +73,7 @@ def results():
 #                                     main                                     #
 # ---------------------------------------------------------------------------- #
 
-if __name__ == '__main__':
-    FLASK_PORT = os.getenv('FLASK_PORT', '8080')
-    app.run(port=FLASK_PORT)
+# run the app
+if __name__ == "__main__":
+    FLASK_PORT = os.getenv("FLASK_PORT", "4040")
+    app.run(port=FLASK_PORT, host="0.0.0.0")

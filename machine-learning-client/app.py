@@ -6,9 +6,11 @@ import base64
 import numpy as np
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-
+CORS(app)
 
 try:
     mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
@@ -80,9 +82,10 @@ def gesture(image_path):
 
     # insert the gesture to the database
     gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
-    gestureDB.insert_one(gesturetolandmark)
-    
-    
+    db.insert_one(gesturetolandmark)
 
 
-
+# to run flask - test backed
+if __name__ == "__main__":
+    FLASK_PORT = os.getenv("FLASK_PORT", "8080")
+    app.run(port=FLASK_PORT, host="0.0.0.0")
