@@ -46,8 +46,8 @@ recognizer = vision.GestureRecognizer.create_from_options(options)
 
 def emoji(hand):
     if hand is None:
-        # if no gesture detected then return question mark emoji
-        return "\U00002753"
+        # if no hand detected 
+        return "\U0001FAE5"
         
     if hand == 'Closed_Fist':
         return "\u270A"
@@ -70,6 +70,10 @@ def emoji(hand):
     elif hand == 'ILoveYou':
         return "\U0001F91F"
         #print("\U0001F91F")
+    else:
+        # machine sees hand but no gesture detected - question mark
+        return "\U00002753"
+
     
 
         

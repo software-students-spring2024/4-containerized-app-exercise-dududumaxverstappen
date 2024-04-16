@@ -14,11 +14,15 @@
     margin: 0 auto;
     background-color: #f6BDC2;
   }
+  #result{
+    font-size: 25px;
+  }
 </style>
 </head>
 <body>
 
-<canvas id="emojiCanvas" width="200" height="200"></canvas>
+<canvas id="emojiCanvas" width="800" height="800"></canvas>
+<a href="{{ url_for('index') }}"><button id="result">go back</button></a>
 <!--<script src="js/fallingEmojis.js"></script>-->
 <script>
   var canvas = document.getElementById("emojiCanvas");
@@ -71,7 +75,9 @@
     requestAnimationFrame(animate); 
   }
 
-  animate(); 
+  fetchEmoji(); // Fetch the emoji when the page loads
+  setInterval(addFallingEmojis, releaseInterval); // Start releasing emojis at intervals
+  animate(); // Start animating 
   </script>
   </body>
 </html>
