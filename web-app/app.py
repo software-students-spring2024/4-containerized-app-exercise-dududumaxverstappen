@@ -21,16 +21,6 @@ try:
 except:
     print("ERROR CONNECTING TO MONGODB")
 
-'''try:
-    uri = "mongodb://mongodb:27017/"
-    client = MongoClient(uri)
-    #client.admin.command("ping")
-    db = client["gestures"]
-    gestureDB = db["emoji"]
-    print("Connected!")
-
-except Exception as e:
-    print(e)'''
 
 
 def emoji(hand):
@@ -61,14 +51,6 @@ def emoji(hand):
 def index():
     return render_template('index.html')
 
-
-"""# upload pic
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files['picture']
-    picture = Image.open(file)"""
-    
-    
 
 
 # get last emoji from database
