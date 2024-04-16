@@ -13,9 +13,15 @@ CORS(app)
 
 CORS(app)
 
-
-
 try:
+    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
+    db = mongo_client['gestures']
+    gestureDB = db['emoji']
+    print("CONNECTED!!!")
+except:
+    print("ERROR CONNECTING TO MONGODB")
+
+'''try:
     uri = "mongodb://mongodb:27017/"
     client = MongoClient(uri)
     #client.admin.command("ping")
@@ -24,7 +30,7 @@ try:
     print("Connected!")
 
 except Exception as e:
-    print(e)
+    print(e)'''
 
 
 def emoji(hand):
