@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<canvas id="emojiCanvas" width="800" height="800"></canvas>
+<canvas id="emojiCanvas" width="2000" height="1100"></canvas>
 <a href="{{ url_for('index') }}"><button id="result">go back</button></a>
 <!--<script src="js/fallingEmojis.js"></script>-->
 <script>
@@ -48,7 +48,7 @@
     fallingEmojis.push({
       x: Math.random() * canvas.width, // Random x position
       y: 0, // Start at the top of the canvas
-      speed: 2 // Random speed between 1 and 3
+      speed: 3 // Random speed between 1 and 3
     });
   }
 
@@ -56,7 +56,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     if (emoji !== ''){
       fallingEmojis.forEach(function(emojiObj) {
-        ctx.font = '30px serif'; // Set the font size and style
+        ctx.font = '50px serif'; // Set the font size and style
         ctx.fillText(emoji, emojiObj.x, emojiObj.y); // Draw the emoji
         emojiObj.y += emojiObj.speed; // Update the y position by the speed
         if (emojiObj.y > canvas.height) {

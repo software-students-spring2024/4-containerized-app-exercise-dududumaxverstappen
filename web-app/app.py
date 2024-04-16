@@ -34,6 +34,9 @@ except Exception as e:
 
 
 def emoji(hand):
+    if hand == 'No gesture detected':
+        # if no hand detected 
+        return "\U0001FAE5"
     if hand == 'Closed_Fist':
         return "\u270A"
     elif hand == 'Open_Palm':
@@ -48,6 +51,9 @@ def emoji(hand):
         return "\u270C"
     elif hand == 'ILoveYou':
         return "\U0001F91F"
+    else:
+        # hand detected bit not recognized
+        return "\U00002753"
 
 
 # show home page
