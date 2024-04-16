@@ -10,11 +10,12 @@ from flask_cors import CORS
 import os
 from flask_cors import CORS
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
 
-try:
+'''try:
     uri = "mongodb://mongodb:27017/"
     client = MongoClient(uri)
     db = client["gestures"]
@@ -22,8 +23,15 @@ try:
     print("Connected!")
 
 except Exception as e:
-    print(e)
+    print(e)'''
 
+try:
+    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
+    db = mongo_client['gestures']
+    gestureDB = db['emoji']
+    print("CONNECTED!!!")
+except:
+    print("ERROR CONNECTING TO MONGODB")
 
 #base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
 base_options = python.BaseOptions(model_asset_path='machine-learning-client/gesture_recognizer.task')
@@ -91,13 +99,17 @@ def process_img():
             ges_emoji = emoji(ges_name)     # get emoji unicode
             print("GOT GESTUREEEEE: " + ges_name + ges_emoji)     # this is giving the enture category
             
-            gesturetolandmark = {"top_gesture": ges_name, "emoji": ges_emoji}
+            gesturetolandmark = {
+                                 "timestamp": datetime.now(),
+                                 "result": { "top_gesture": ges_name, "emoji": ges_emoji }
+                                 }
             print("saved to dict")
             gestureDB.insert_one(gesturetolandmark)
             # for testing
             print("saved to db")
             
-            return jsonify(gesturetolandmark), 200
+            #return jsonify(gesturetolandmark), 200
+            return "FINISH PROCESS!!"      # or return None
 
         except Exception as e:
             print(e)
