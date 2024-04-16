@@ -31,10 +31,11 @@ try:
     DB_USER = os.getenv("MONGODB_USER")
     DB_PASSWORD = os.getenv("MONGO_PWD")
     DB_HOST = os.getenv("DB_HOST")
-    uri=f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@c{DB_HOST}.5kr79yv.mongodb.net/"
+    uri=f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_HOST}.5kr79yv.mongodb.net/"
     mongo_client = MongoClient(uri)
     db = mongo_client['gestures']
     gestureDB = db['emoji']
+    print("connected!!!!")
 except:
     print("ERROR CONNECTING TO MONGODB")
 
