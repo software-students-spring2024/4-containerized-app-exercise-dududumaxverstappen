@@ -1,19 +1,22 @@
 from flask import Flask, request, jsonify, render_template, Response
 from pymongo import MongoClient
+from PIL import Image
 import os
 import requests
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
+from flask_cors import CORS
 
 
-load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
+
 
 
 try:
     uri = "mongodb://mongodb:27017/"
     client = MongoClient(uri)
-    client.admin.command("ping")
+    #client.admin.command("ping")
     db = client["gestures"]
     gestureDB = db["emoji"]
     print("Connected!")
@@ -43,6 +46,15 @@ def emoji(hand):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+"""# upload pic
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['picture']
+    picture = Image.open(file)"""
+    
+    
 
 
 # get last emoji from database

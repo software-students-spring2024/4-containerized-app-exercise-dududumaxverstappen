@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cafe near you</title>
+  <title>emojis!</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <style>
     * {
@@ -54,21 +54,53 @@
 <body>
     <div class="container">
       <video id="videoElement" class="video" autoplay></video>
-      <button id="capture" onclick="capture()" >Capture</button>
+      <button id="capture">Capture</button>
       <canvas id="canvas" width="640" height="480"></canvas>
     </div>
-    <script src="js/cam.js"></script>
+    <!-- <script src="js/cam.js"></script> -->
+    
     <script>
-      // stream video in front end 
       const video = document.getElementById('videoElement');
-  
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      const captureButton = document.getElementById('capture');
+
+      // Set up the webcam
       navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          video.srcObject = stream;
-        })
-        .catch(err => {
-          console.error('Error accessing the camera:', err);
-        });
+          .then(stream => {
+              video.srcObject = stream;
+          })
+          .catch(err => {
+              console.error('Error accessing the camera:', err);
+          });
+
+      // Add event listener for capture button
+      captureButton.addEventListener('click', function() {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageDataURL = canvas.toDataURL('image/jpeg'); // Get the image data as JPEG
+          sendImage(imageDataURL); // Send the image data to the server
+      });
+
+      // Function to send image data to the server
+      function sendImage(imageDataURL) {
+          fetch('http://localhost:5002/process_img', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ image: imageDataURL.toString() })
+          })
+          .then(response => {
+              if (response.ok) {
+                  console.log('Image sent successfully.');
+              } else {
+                  throw new Error('Failed to send image: ' + response.statusText);
+              }
+          })
+          .catch(error => {
+              console.error('Error sending image:', error);
+          });
+      }
     </script>
   </body>
 
