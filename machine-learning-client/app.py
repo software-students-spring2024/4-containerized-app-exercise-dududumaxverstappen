@@ -82,7 +82,7 @@ def gesture(image_path):
 
     # insert the gesture to the database
     gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
-    gestureDB.insert_one(gesturetolandmark)
+    db.insert_one(gesturetolandmark)
 
 
 # to run flask - test backed
