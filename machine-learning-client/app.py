@@ -11,9 +11,11 @@ import os
 from flask_cors import CORS
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
+load_dotenv()
 
 '''try:
     uri = "mongodb://mongodb:27017/"
@@ -26,10 +28,13 @@ except Exception as e:
     print(e)'''
 
 try:
-    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
+    DB_USER = os.getenv("MONGODB_USER")
+    DB_PASSWORD = os.getenv("MONGO_PWD")
+    DB_HOST = os.getenv("DB_HOST")
+    uri=f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@c{DB_HOST}.5kr79yv.mongodb.net/"
+    mongo_client = MongoClient(uri)
     db = mongo_client['gestures']
     gestureDB = db['emoji']
-    print("CONNECTED!!!")
 except:
     print("ERROR CONNECTING TO MONGODB")
 
