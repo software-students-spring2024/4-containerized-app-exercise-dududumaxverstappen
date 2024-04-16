@@ -11,9 +11,10 @@ app = Flask(__name__)
 
 
 try:
-    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
-    db = mongo_client['gestures']
-    gestureDB = db['emoji']
+    uri = "mongodb://mongodb:27017/"
+    client = MongoClient(uri)
+    db = client["gestures"]
+    gestureDB = db["emoji"]
     print("Connected!")
 
 except Exception as e:
@@ -70,6 +71,20 @@ def handle_image():
 
 
 def gesture(image_path):
+    try:
+        image = mp.Image.create_from_file(image_path)
+        recognition_result = recognizer.recognize(image)
+        top_gesture = recognition_result.gestures[0][0]  # Assuming only one gesture is recognized
+        ges_emoji = emoji(top_gesture)
+        
+        gesturetolandmark = {"result": {"top_gesture": top_gesture, "emoji": ges_emoji}}
+        gestureDB.insert_one(gesturetolandmark)
+        return jsonify(gesturetolandmark), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Error processing the image"}), 500
+    """
     image = mp.Image.create_from_file(image_path)
     recognition_result = recognizer.recognize(image)
 
@@ -81,6 +96,10 @@ def gesture(image_path):
     # insert the gesture to the database
     gesturetolandmark = { "result": { "top_gesture": top_gesture, "emoji" : ges_emoji }}
     gestureDB.insert_one(gesturetolandmark)
+    """
+    
+if __name__ == '__main__':
+    app.run(debug=True, port=5002)
     
     
 

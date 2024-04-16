@@ -7,7 +7,7 @@ const captureButton = document.getElementById('capture');
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
-    });
+    })
     .catch(err => console.error('Cannot access camera: ', err));
 
 captureButton.addEventListener('click', function() {

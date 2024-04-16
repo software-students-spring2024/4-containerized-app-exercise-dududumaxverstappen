@@ -1,21 +1,21 @@
 version: '3'
 services:
   web_app:
-    build:
-      context: . 
-      dockerfile: ./web_app/Dockerfile
+    build: 
+      context: ./web-app
+      dockerfile: ./Dockerfile
     ports:
       - "5001:5001"
     depends_on:
       - mongodb
       - machine_learning_client
     environment:
-      FLASK_APP: web_app/app.py
+      FLASK_APP: web-app/app.py
 
   machine_learning_client:
     build:
-      context: .
-      dockerfile: ./machine_learning_client/Dockerfile
+      context: ./machine_learning_client
+      dockerfile: ./Dockerfile
     ports:
       - "5002:5002"
     depends_on:
@@ -27,5 +27,3 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-    volumes:
-      - ./database:/data/db

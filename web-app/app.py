@@ -15,6 +15,7 @@ try:
     client = MongoClient(uri)
     client.admin.command("ping")
     db = client["gestures"]
+    gestureDB = db["emoji"]
     print("Connected!")
 
 except Exception as e:
@@ -40,7 +41,7 @@ def emoji(hand):
 
 # show home page
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 
@@ -48,7 +49,7 @@ def home():
 @app.route('/get_emoji', methods=['GET'])
 def get_emoji():
     # Retrieve latest emoji from MongoDB
-    latest_gesture = db.find_one(
+    latest_gesture = gestureDB.find_one(
         {},
         sort=[('timestamp', -1)]
     )
@@ -64,13 +65,9 @@ def results():
     return render_template('fallingEmojis.html')
 
 
-
-
-
 # ---------------------------------------------------------------------------- #
 #                                     main                                     #
 # ---------------------------------------------------------------------------- #
 
 if __name__ == '__main__':
-    FLASK_PORT = os.getenv('FLASK_PORT', '8080')
-    app.run(port=FLASK_PORT)
+    app.run(debug=True, port=5001)
