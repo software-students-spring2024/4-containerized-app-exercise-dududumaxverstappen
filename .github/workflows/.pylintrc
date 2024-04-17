@@ -1,0 +1,8 @@
+[FORMAT]
+max-line-length = 120
+
+[MESSAGES CONTROL]
+disable =
+    C0303,  # trailing-whitespace
+    C0114,  # If module docstrings are not crucial for your project
+    C0116,  # If function docstrings are not crucial for your project

@@ -2,8 +2,6 @@ from flask import Flask, render_template, Response
 from pymongo import MongoClient
 from flask_cors import CORS
 
-
-
 app = Flask(__name__)
 CORS(app)
 
@@ -16,8 +14,6 @@ try:
 
 except Exception as e:
     print(e)
-
-
 
 
 def emoji(hand):

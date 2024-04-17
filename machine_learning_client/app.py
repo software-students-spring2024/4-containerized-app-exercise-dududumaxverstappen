@@ -27,7 +27,6 @@ base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
 options = vision.GestureRecognizerOptions(base_options=base_options)
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
-
 def emoji(hand):
     if hand is None:
         # if no hand detected 
@@ -50,11 +49,6 @@ def emoji(hand):
     else:
         # machine sees hand but no gesture detected - question mark
         return "\U00002753"
-
-    
-
-        
-
 
 @app.route('/process_img', methods=['POST'])
 def process_img(): 
