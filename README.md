@@ -1,5 +1,7 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
-
+![Emoji](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/emoji-faller.svg)
+![Event](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/event-logger.yml/badge.svg)
+![Website](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/website.yml/badge.svg)
 
 # Containerized App Exercise
 ## Overview
