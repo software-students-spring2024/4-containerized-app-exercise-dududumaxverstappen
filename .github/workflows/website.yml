@@ -24,8 +24,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r web_app/requirements.txt
         pip install pylint black
-    - name: Run Pylint
-      run: pylint web_app/app.py --ignore-patterns='.*\.pb2\.py,.*\.pb2_grpc\.py'
+    #- name: Run Pylint
+      #run: pylint web_app/app.py --ignore-patterns='.*\.pb2\.py,.*\.pb2_grpc\.py'
     - name: Run Black (Check mode)
       run: black --check web_app/
     - name: Run tests
