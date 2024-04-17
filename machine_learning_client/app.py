@@ -6,19 +6,21 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
 from datetime import datetime
-
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 
 try:
-    uri = "mongodb://mongodb:27017/"
-    client = MongoClient(uri)
-    db = client["gestures"]
-    gestureDB = db["emoji"]
-    print("Connected!")
-
+    DB_USER = os.getenv("MONGODB_USER")
+    DB_PASSWORD = os.getenv("MONGO_PWD")
+    DB_HOST = os.getenv("DB_HOST")
+    uri=f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@c{DB_HOST}.5kr79yv.mongodb.net/"
+    mongo_client = MongoClient(uri)
+    db = mongo_client['gestures']
+    gestureDB = db['emoji']
 except Exception as e:
     print(e)
 
