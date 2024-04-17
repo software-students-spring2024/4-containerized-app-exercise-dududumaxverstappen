@@ -13,9 +13,15 @@ The Hand-Tracking Emoji Generator application utilizes hand tracking technology 
 ## Features
 - **Hand Tracking**: Utilizes MediaPipe's hand tracking technology to accurately detect and interpret users' hand gestures.
 - **Emoji Generation**: Generates emojis based on recognized hand gestures, allowing users to express themselves visually.
-- **Customizable Emojis**: Offers a variety of emojis to choose from, with the ability to customize based on hand gestures for personalized expression.
-- **Emoji History Tracking**: Integrates a database to store and track the history of previously generated emojis, enabling users to revisit their favorite expressions.
 - **User-Friendly Interface**: Designed with an intuitive and easy-to-use interface for seamless interaction and expression.
+
+## How to Run
+- Make sure docker is running on your machine before entering this command:
+```
+docker-compose up --build
+```
+- After successful build, you can access the website at http://localhost:5001
+
 
 ## Contributors
 * [Bonny](https://github.com/BonnyCChavarria) 
