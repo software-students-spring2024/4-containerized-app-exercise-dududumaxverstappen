@@ -30,6 +30,10 @@ jobs:
       run: black --check web-app/
     - name: Run tests
       run: pytest tests/web_app_tests.py
-    - name: Deploy
-      run: echo "Add your deployment commands here"
+    - name: Build Docker image
+      run: |
+        docker build -t bonnychavarria/web_app:latest
+    - name: Publish Docker image
+      run: | 
+        docker push bonnychavarria/web_app:latest
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
