@@ -11,7 +11,6 @@ try:
     db = client["gestures"]
     gestureDB = db["emoji"]
     print("Connected!")
-
 except Exception as e:
     print(e)
 
