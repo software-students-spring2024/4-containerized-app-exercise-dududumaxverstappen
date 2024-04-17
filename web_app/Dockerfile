@@ -1,6 +1,6 @@
-FROM python:3.10-slim
+FROM python:3.10
 
-WORKDIR /app
+WORKDIR /web_app
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt

@@ -1,9 +1,5 @@
-from flask import Flask, request, jsonify, render_template, Response
+from flask import Flask, render_template, Response
 from pymongo import MongoClient
-from PIL import Image
-import os
-import requests
-#from dotenv import load_dotenv
 from flask_cors import CORS
 
 
@@ -11,15 +7,16 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-CORS(app)
-
 try:
-    mongo_client = MongoClient('mongodb+srv://bcdy:BPoOlpuLgv3WKJ62@coffeeshops.5kr79yv.mongodb.net/')
-    db = mongo_client['gestures']
-    gestureDB = db['emoji']
-    print("CONNECTED!!!")
-except:
-    print("ERROR CONNECTING TO MONGODB")
+    uri = "mongodb://mongodb:27017/"
+    client = MongoClient(uri)
+    db = client["gestures"]
+    gestureDB = db["emoji"]
+    print("Connected!")
+
+except Exception as e:
+    print(e)
+
 
 
 
@@ -78,4 +75,4 @@ def results():
 # ---------------------------------------------------------------------------- #
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host="0.0.0.0", port=5001, debug=True)

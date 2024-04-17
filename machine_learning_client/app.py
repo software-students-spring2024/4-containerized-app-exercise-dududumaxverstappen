@@ -1,23 +1,18 @@
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-import cv2
 import base64
-import numpy as np
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from flask_cors import CORS
-import os
-from flask_cors import CORS
-import os
 from datetime import datetime
-from dotenv import load_dotenv
+
 
 app = Flask(__name__)
 CORS(app)
-load_dotenv()
 
-'''try:
+
+try:
     uri = "mongodb://mongodb:27017/"
     client = MongoClient(uri)
     db = client["gestures"]
@@ -25,22 +20,10 @@ load_dotenv()
     print("Connected!")
 
 except Exception as e:
-    print(e)'''
+    print(e)
 
-try:
-    DB_USER = os.getenv("MONGODB_USER")
-    DB_PASSWORD = os.getenv("MONGO_PWD")
-    DB_HOST = os.getenv("DB_HOST")
-    uri=f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_HOST}.5kr79yv.mongodb.net/"
-    mongo_client = MongoClient(uri)
-    db = mongo_client['gestures']
-    gestureDB = db['emoji']
-    print("connected!!!!")
-except:
-    print("ERROR CONNECTING TO MONGODB")
 
-#base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
-base_options = python.BaseOptions(model_asset_path='machine-learning-client/gesture_recognizer.task')
+base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
 options = vision.GestureRecognizerOptions(base_options=base_options)
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
@@ -52,25 +35,18 @@ def emoji(hand):
         
     if hand == 'Closed_Fist':
         return "\u270A"
-        #print("\u270A")  
     elif hand == 'Open_Palm':
         return "\u270B"
-        #print("\u270B")  
     elif hand == 'Pointing_Up':
-        return "\U0001F446"
-        #print("\U0001F446")  
+        return "\U0001F446"  
     elif hand == 'Thumb_Down':
-        return "\U0001F44E"
-        #print("\U0001F44E")  
+        return "\U0001F44E" 
     elif hand == 'Thumb_Up':
-        return "\U0001F44D"
-        #print("\U0001F44D")  
+        return "\U0001F44D" 
     elif hand == 'Victory':
-        return "\u270C"
-        #print("\u270C")  
+        return "\u270C"  
     elif hand == 'ILoveYou':
         return "\U0001F91F"
-        #print("\U0001F91F")
     else:
         # machine sees hand but no gesture detected - question mark
         return "\U00002753"
@@ -96,7 +72,6 @@ def process_img():
             #return jsonify({'error': 'Invalid image data format'}), 400
         
         header, encoded = parts
-        #data.split(",")[1]
         img_data = base64.b64decode(encoded)
         img_path = 'captured.jpeg'
         with open(img_path, 'wb') as file:
@@ -136,11 +111,9 @@ def process_img():
             print(e)
             return jsonify({"error": "Error processing the image"}), 500
         
-        
-        #return gesture(img_path)
     
     except Exception as e:
-        print("ERRORRRRR")
+        print(e)
         return jsonify({'error': 'Error processing the image'}), 500
         
     
@@ -156,5 +129,5 @@ def favicon():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    app.run(host="0.0.0.0", port=5002, debug=True)
     
