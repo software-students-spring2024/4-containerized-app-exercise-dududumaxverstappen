@@ -1,4 +1,6 @@
 ![Lint-free](https://github.com/nyu-software-engineering/containerized-app-exercise/actions/workflows/lint.yml/badge.svg)
+![Workflow Status](https://github.com/software-students-spring2024/4-containerized-app-exercise-dududumaxverstappen/actions/workflows/run-tests.yml/badge.svg)
+
 
 # Containerized App Exercise
 ## Overview
