@@ -17,22 +17,22 @@ except Exception as e:
 
 
 def emoji(hand):
-    if hand == 'No gesture detected':
-        # if no hand detected 
+    if hand == "No gesture detected":
+        # if no hand detected
         return "\U0001FAE5"
-    if hand == 'Closed_Fist':
+    if hand == "Closed_Fist":
         return "\u270A"
-    elif hand == 'Open_Palm':
+    elif hand == "Open_Palm":
         return "\u270B"
-    elif hand == 'Pointing_Up':
+    elif hand == "Pointing_Up":
         return "\U0001F446"
-    elif hand == 'Thumb_Down':
+    elif hand == "Thumb_Down":
         return "\U0001F44E"
-    elif hand == 'Thumb_Up':
-        return "\U0001F44D" 
-    elif hand == 'Victory':
+    elif hand == "Thumb_Up":
+        return "\U0001F44D"
+    elif hand == "Victory":
         return "\u270C"
-    elif hand == 'ILoveYou':
+    elif hand == "ILoveYou":
         return "\U0001F91F"
     else:
         # hand detected bit not recognized
@@ -40,35 +40,31 @@ def emoji(hand):
 
 
 # show home page
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
-
+    return render_template("index.html")
 
 
 # get last emoji from database
-@app.route('/get_emoji', methods=['GET'])
+@app.route("/get_emoji", methods=["GET"])
 def get_emoji():
     # Retrieve latest emoji from MongoDB
-    latest_gesture = gestureDB.find_one(
-        {},
-        sort=[('timestamp', -1)]
-    )
-    top_gesture = latest_gesture['result']['top_gesture']
+    latest_gesture = gestureDB.find_one({}, sort=[("timestamp", -1)])
+    top_gesture = latest_gesture["result"]["top_gesture"]
     emoji_data = emoji(top_gesture)
-    
-    return Response(emoji_data, mimetype='text/plain')
+
+    return Response(emoji_data, mimetype="text/plain")
 
 
 # show results, get data from database
-@app.route('/results')
+@app.route("/results")
 def results():
-    return render_template('fallingEmojis.html')
+    return render_template("fallingEmojis.html")
 
 
 # ---------------------------------------------------------------------------- #
 #                                     main                                     #
 # ---------------------------------------------------------------------------- #
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
