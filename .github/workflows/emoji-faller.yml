@@ -22,10 +22,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint black mediapipe cv2 pymongo flask flask-cors python-dotenv
+        pip install -r machine_learning_client/requirements.txt
+        pip install pylint black
     - name: Run Pylint
-      run: pylint machine-learning-client/**/*.py --ignore-patterns='*.pb2.py,*.pb2_grpc.py'
+      run: pylint machine_learning_client/app.py --ignore-patterns='*.pb2.py,*.pb2_grpc.py'
     - name: Run Black (Check mode)
       run: black --check machine-learning-client/
     - name: Run tests
-      run: echo "Add your test commands here"
+      run: pytest tests/ml_app_tests.py
