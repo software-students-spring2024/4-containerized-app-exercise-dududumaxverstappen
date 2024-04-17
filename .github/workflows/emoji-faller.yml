@@ -23,6 +23,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r machine_learning_client/requirements.txt
+        pip install pytest
         pip install pylint black
     - name: Run Pylint
       run: pylint machine_learning_client/app.py --ignore-patterns='.*\.pb2\.py,.*\.pb2_grpc\.py'
