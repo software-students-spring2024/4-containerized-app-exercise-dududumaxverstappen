@@ -51,3 +51,51 @@ def test_404_page(client):
     response = client.get('/nothing-here')
     assert response.status_code == 404
 
+
+def test_database_connection():
+    """
+    Test database connection setup
+    """
+    from web_app.app import gestureDB
+    assert gestureDB is not None
+
+def test_additional_route(client):
+    """
+    Test additional route
+    """
+    response = client.get("/additional_route")
+    assert response.status_code == 404  
+
+def test_invalid_input(client):
+    """
+    Test invalid input handling
+    """
+    response = client.post("/submit_data", data={"invalid_field": "invalid_value"})
+    assert response.status_code == 404  
+
+def test_database_connection_failure(monkeypatch):
+    """
+    Test database connection failure
+    """
+    import web_app.app
+    
+    def mock_mongo_client(*args, **kwargs):
+        raise Exception("Mock MongoDB connection failure")
+
+    monkeypatch.setattr(web_app.app, 'MongoClient', mock_mongo_client)
+    with pytest.raises(Exception):
+        web_app.app.mongo_client = web_app.app.MongoClient('mongodb+srv://mockuser:mockpassword@mockhost/mockdatabase')
+
+def test_emoji(client):
+    """
+    Test emoji
+    """
+    from web_app.app import gestureDB
+    
+    invalid_data = {'result': {'top_gesture': 'Invalid_Gesture'}}
+    gestureDB.insert_one({'result': {'top_gesture': 'Invalid_Gesture'}})
+    
+    response = client.get("/get_emoji")
+    assert response.status_code == 200
+    assert response.content_type == "text/plain; charset=utf-8"
+
