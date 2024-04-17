@@ -27,13 +27,11 @@ jobs:
     - name: Run Pylint
       run: pylint web_app/app.py --ignore-patterns='.*\.pb2\.py,.*\.pb2_grpc\.py'
     - name: Run Black (Check mode)
-      run: black --check web-app/
+      run: black --check web_app/
     - name: Run tests
       run: pytest tests/web_app_tests.py
-    - name: Build Docker image
-      run: |
-        docker build -t bonnychavarria/web_app:latest
-    - name: Publish Docker image
-      run: | 
-        docker push bonnychavarria/web_app:latest
+    - name: Build and run with Docker Compose
+      run: docker-compose up --build -d
+    - name: Check running services
+      run: docker-compose ps
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'

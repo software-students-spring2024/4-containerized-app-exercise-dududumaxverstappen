@@ -5,3 +5,4 @@ numpy==1.26.4
 opencv_contrib_python==4.9.0.80
 opencv_python==4.9.0.80
 pymongo==4.6.3
+python-dotenv==1.0.1
