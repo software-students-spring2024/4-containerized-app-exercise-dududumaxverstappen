@@ -23,7 +23,7 @@ except Exception as e:
     print(e)
 
 
-base_options = python.BaseOptions(model_asset_path='gesture_recognizer.task')
+base_options = python.BaseOptions(model_asset_path='machine_learning_client/gesture_recognizer.task')
 options = vision.GestureRecognizerOptions(base_options=base_options)
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
@@ -100,7 +100,13 @@ def process_img():
                                  "result": { "top_gesture": ges_name, "emoji": ges_emoji }
                                  }
             print("saved to dict")
-            gestureDB.insert_one(gesturetolandmark)
+            
+            try:
+                gestureDB.insert_one(gesturetolandmark)
+            
+            except Exception as e:
+                print(e)
+
             # for testing
             print("saved to db")
             
